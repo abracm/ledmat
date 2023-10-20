@@ -33,6 +33,8 @@ $(NAME).elf: $(sources.o)
 	$(CC) $(LDFLAGS) -o $@ $(sources.o)
 	$(SIZE) $@
 
+check:
+
 clean:
 	rm -rf $(NAME).o $(NAME).elf $(NAME).hex
 
