@@ -3,7 +3,7 @@ title: ledmat Documentation
 favicon: "favicon.ico"
 ---
 
-![cover photo](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/coverphoto.jpg)
+![cover photo](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/coverphoto.jpg)
 
 
 ## Introduction
@@ -24,7 +24,7 @@ Click [here](#abcd) to skip the technical stuff and go straight to the instructi
 
 ## The data transmission protocol
 
-![raw data](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/rawpacket.PNG)
+![raw data](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/rawpacket.PNG)
 
 This is what the audio signal output by the stackmat looks like, when it is at 0:00:00. It was recorded with audacity from a computer through the audio jack. The timer outputs such a signal about every 0.15 seconds, giving the current state of the timer. The first task is to be able to decode this data.
 
@@ -68,11 +68,11 @@ Admittedly, the voltage is quite close to the edge, and there might be some issu
  In conclusion, there is no need for any voltage level shifter, and this makes the project much simpler to build.
 
 I later confirmed this with an oscilloscope:
-![oscilloscope](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/oscilloscope.jpg)
+![oscilloscope](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/oscilloscope.jpg)
 
 ## Making a display:  7-segment LEDs or LED Matrix?
 
-![raw data](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/max7219.jpg)
+![raw data](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/max7219.jpg)
 
 So far, we can see that 7-segment LEDs are the main choice for people making stackmat displays. This is because they are available in a wide variety of sizes and colors. However, each digit has 10 pins, therefore a total of 50 pins would need to be connected for a 5 digit display. 
 
@@ -89,7 +89,7 @@ They are available in individual 8x8 pixel units, or as chains of four such unit
 
 <a name="abcd"></a>
 ## Block diagram 
-![block diagram](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/blockdiagram.png)
+![block diagram](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/blockdiagram.png)
 
 
 This figure shows the overall big picture of what we are trying to build. We receive the signal from the stackmat’s 2.5mm jack and give it between a digital input pin and ground of an Arduino Nano microcontroller. The Arduino has a program uploaded to it which decodes the incoming data and displays it on the screen in real time. 
@@ -198,7 +198,7 @@ or
 
 This section definitely requires some soldering skills. You can find tutorials for that on Youtube.
 
-![cover photo](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/psu.jpg)
+![cover photo](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/psu.jpg)
 
 First connect the red wire of the battery to an extreme terminal of the on/off switch. Then the middle terminal of the switch to the terminal marked B+ or BAT+ on the side of the TP4056 board without the USB port. Connect the black wire directly to B- or BAT-. Connections should be made by stripping the insulation around the end of the wire, looping the exposed end through the hole and soldering.
 
@@ -210,7 +210,7 @@ The Arduino should now turn on when you toggle the switch.
   
 ## Fitting the project into an enclosure
 
-[![IMAGE ALT TEXT](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/panorama_small.jpg)](https://raw.github.com/jayanth-rajakumar/ledmat/master/docs/panorama.jpg)
+[![IMAGE ALT TEXT](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/panorama_small.jpg)](https://raw.github.com/jayanth-rajakumar/ledmat/master/doc/panorama.jpg)
 
 Click on the above image to see the full sized version.
 
