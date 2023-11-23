@@ -12,6 +12,8 @@ CC           = avr-gcc
 OBJCOPY      = avr-objcopy
 SIZE         = avr-size
 
+JSIMPL       = node
+
 
 .SUFFIXES:
 .SUFFIXES: .c .o
@@ -24,6 +26,9 @@ all: $(NAME).hex
 $(NAME).hex: $(NAME).elf
 	$(OBJCOPY) -j .text -j .data -Oihex $< $@
 
+tests.mjs = \
+	tests/js/processor.mjs \
+
 sources.o = \
 	src/$(NAME).o
 
@@ -33,7 +38,18 @@ $(NAME).elf: $(sources.o)
 	$(CC) $(LDFLAGS) -o $@ $(sources.o)
 	$(SIZE) $@
 
-check:
+
+.SUFFIXES: .mjs-run
+tests.mjs-run = $(tests.mjs:.mjs=.mjs-run)
+$(tests.mjs-run):
+	$(JSIMPL) $*.mjs
+
+check-node: $(tests.mjs-run)
+
+check-c:
+
+check: check-node check-c
+
 
 clean:
 	rm -rf $(sources.o) $(NAME).elf $(NAME).hex
