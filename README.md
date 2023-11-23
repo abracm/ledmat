@@ -12,4 +12,4 @@ First assemble the hardware according to the schematics. A full tutorial will be
 7. Download this repository and extract the ledmat.ino file. Open it, set the board to Arduino Nano in the Tools menu. Also make sure the correct Port is selected.
 8. Upload the sketch, plug in the stackmat and enjoy!
 
-![Prototype](https://raw.github.com/jayanth-rajakumar/ledmat/master/img_prototype.jpg)
+![Prototype](https://raw.github.com/jayanth-rajakumar/ledmat/main/doc/img_prototype.jpg)
