@@ -25,7 +25,7 @@ $(NAME).hex: $(NAME).elf
 	$(OBJCOPY) -j .text -j .data -Oihex $< $@
 
 sources.o = \
-	$(NAME).o
+	src/$(NAME).o
 
 $(sources.o): Makefile
 
@@ -36,7 +36,7 @@ $(NAME).elf: $(sources.o)
 check:
 
 clean:
-	rm -rf $(NAME).o $(NAME).elf $(NAME).hex
+	rm -rf $(sources.o) $(NAME).elf $(NAME).hex
 
 deploy: $(NAME).hex
 	avrdude \
