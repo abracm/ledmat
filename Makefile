@@ -26,11 +26,13 @@ all: $(NAME).hex
 $(NAME).hex: $(NAME).elf
 	$(OBJCOPY) -j .text -j .data -Oihex $< $@
 
+sources.c = \
+	src/processor.c \
+
 tests.mjs = \
 	tests/js/processor.mjs \
 
-sources.o = \
-	src/$(NAME).o
+sources.o = $(sources.c:.c=.o)
 
 $(sources.o): Makefile
 
