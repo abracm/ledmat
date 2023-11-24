@@ -26,9 +26,8 @@ JSIMPL       = node
 
 all: $(NAME).hex
 
-
 $(NAME).hex: $(NAME).elf
-	$(OBJCOPY) -j .text -j .data -Oihex $< $@
+	$(OBJCOPY) -j .text -j .data -O ihex $(NAME).elf $@
 
 sources.c = \
 	src/processor.c \
