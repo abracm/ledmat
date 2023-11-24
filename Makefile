@@ -15,13 +15,17 @@ SIZE         = avr-size
 JSIMPL       = node
 
 
+
 .SUFFIXES:
 .SUFFIXES: .c .o
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
+
+
 all: $(NAME).hex
+
 
 $(NAME).hex: $(NAME).elf
 	$(OBJCOPY) -j .text -j .data -Oihex $< $@
@@ -41,6 +45,7 @@ $(NAME).elf: $(sources.o)
 	$(SIZE) $@
 
 
+
 .SUFFIXES: .mjs-run
 tests.mjs-run = $(tests.mjs:.mjs=.mjs-run)
 $(tests.mjs-run):
@@ -48,9 +53,12 @@ $(tests.mjs-run):
 
 check-node: $(tests.mjs-run)
 
+
 check-c:
 
+
 check: check-node check-c
+
 
 
 clean:
