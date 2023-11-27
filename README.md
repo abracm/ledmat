@@ -23,10 +23,11 @@ First assemble the hardware according to the schematics. A full tutorial will be
 - we could show the state before the start of the attempt instead of just zeros - show when hands are on timer, when competitor is ready
 - instead of displaying 0:00.00 format from the getgo, we could start display only the three rightmost digits and add the other ones as needed while the timer keeps running
 - the Gen 5 timer has an annoying feature that, when in 2-pad mode, it switches off and on three times after the timer is stopped, which is reproduced on the display, we should try to avoid this behaviour
+- never display thousands of seconds - not used in WCA competitions
 
 ## Speedstacks timer signal protocol
 
-The Speedstacks timers send a digital audio signal thorugh the data port ([example](https://imgur.com/mRPrlxn)). This is a guide how to interpret the signal.
+The Speedstacks timers send a digital audio signal thorugh the data port ([example](https://imgur.com/mRPrlxn)). This is a guide how on to interpret the signal.
 
 The timer sends the signal with a fixed rate of 1200 bits per second (check if this is correct and consistent across all timer generations). It sends a packet that are 90 or 100 bytes long to convey a single time to be displayed.
 
@@ -42,7 +43,7 @@ Each packet is separated by an unspecificed number of idle values (check if we c
 
 A time to be displayed is sent as a packet that can be 9 or 10 bytes long. The lenght of the packet is determined by the timer generation (see section below on timer generations).
 
-Because of the non-idle value and idle value that go before and after each byte, the bytes take 10 bits to be transmitted, and the packet lenghts are therefore 90 or 190 bits.
+Because of the non-idle value and idle value that go before and after each byte, the bytes take 10 bits to be transmitted, and the packet lenghts are therefore 90 or 100 bits.
 
 These are what each byte consists of:
 
