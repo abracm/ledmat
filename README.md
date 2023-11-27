@@ -86,9 +86,9 @@ These bytes are the ASCII codes for \n (newline) and \r (carriage return). Is th
 
 After reading the 10 bits necessary for a byte (non-idle value + byte + idle value), you must first discard the 1st and the last bits of the byte.
 
-Then, you must place the bits in reverse order. E.g. (11001 becomes 10011)
+Then, you must place the bits in reverse order. E.g. (11001001 becomes 10010011)
 
-Finally, the bits must be inverted to arrive at the final byte (10011 becomes 01100).
+Finally, the bits must be inverted to arrive at the final byte (10010011 becomes 01101100).
 
 ### Example of interpreting a packet from start to finish
 
@@ -106,11 +106,12 @@ WIP
 - Packet length: 9 bytes (dobule check)
 - Idle value: 0 (double check)
 
-#### Generation 3
-![Gen 3](https://www.thecubicle.com/cdn/shop/products/StackMat_20G5_20Timer_1200x1200.jpg?v=1620844103)
+#### Generation 5
+![Gen 5](https://www.thecubicle.com/cdn/shop/products/StackMat_20G5_20Timer_1200x1200.jpg?v=1620844103)
 - Packet length: need to check
 - Idle value: need to check
- 
+
+can we easily support other non-speedstacks timers? testing needed
 
 ### Useful sources
 
