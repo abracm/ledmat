@@ -17,10 +17,13 @@ JSIMPL       = node
 
 
 .SUFFIXES:
-.SUFFIXES: .c .o
+.SUFFIXES: .c .o .t
 
 .c.o:
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+
+.c.t:
+	$(CC) $(CFLAGS) $(CPPFLAGS) $< -o $@
 
 
 
