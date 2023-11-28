@@ -17,6 +17,7 @@ First assemble the hardware according to the schematics. A full tutorial will be
 - Setup github actions to run `make all check` (Pedro)
 - Translate the JS bitstream processor into C for the arduino
 - code first prototype of working display
+- add code snipets and examples throughout timer signal protocol
 
 ## Improvements on existing displays
 
@@ -34,6 +35,9 @@ The timer sends the signal with a fixed rate of 1200 bits per second (check if t
 ### Idle values
 
 The bitstream user a standard idle value (0 or 1) to inform when a byte or a packet ended. The idle value varies across timer generations (see section below on timer generations).
+
+ADD IMAGE INLINE - IDLE VALUE THROUGH DIFFERENT TIMER GENERATIONS
+IDLE VALUE 0 AND ADD VALUE 1
 
 Each byte is proceeded by a non-idle value, to show that the byte has begun, and followed by an idle value, to show that it has ended.
 
