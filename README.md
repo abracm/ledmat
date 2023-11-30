@@ -36,10 +36,13 @@ The timer sends the signal with a fixed rate of 1200 bits per second (check if t
 
 The bitstream user a standard idle value (0 or 1) to inform when a byte or a packet ended. The idle value varies across timer generations (see section below on timer generations).
 
-ADD IMAGE INLINE - IDLE VALUE THROUGH DIFFERENT TIMER GENERATIONS
-IDLE VALUE 0 AND ADD VALUE 1
-
 Each byte is proceeded by a non-idle value, to show that the byte has begun, and followed by an idle value, to show that it has ended.
+
+![Gen 3](https://www.jflei.com/public/img/dialup-stackmat/no-filter.png)
+*example of a Gen 3 timer bitstream- the idle value is 1*
+
+![Gen 4](https://i.imgur.com/mRPrlxn.png)
+*example of a Gen 4 timer bitstream- the idle value is 0*
 
 Each packet is separated by an unspecificed number of idle values (check if we can tell an exact amount and if it is consistent across timers). Therefore, to check if a packet has ended, you just need to check if you can read ten or more equal values in a row, as that couldn't happen if a byte was being transmitted.
 
@@ -48,6 +51,10 @@ Each packet is separated by an unspecificed number of idle values (check if we c
 A time to be displayed is sent as a packet that can be 9 or 10 bytes long. The lenght of the packet is determined by the timer generation (see section below on timer generations).
 
 Because of the non-idle value and idle value that go before and after each byte, the bytes take 10 bits to be transmitted, and the packet lenghts are therefore 90 or 100 bits.
+
+Here is an example of a full packet extracted from a Gen 3 timer that will use to break down what each byte means. **TODO**
+
+Notice that this packet it 10 bytes long and uses 1 as its idle value.
 
 These are what each byte consists of:
 
@@ -75,7 +82,7 @@ Here is the breakdown on byte-by-byte:
 - 6: hundreths of a second
 - 7 (if in use): thousands of a second (check - if 7th byte no used to convey time information, does timer simply not transmit thousands of a second?)
 
-The byte represents the ASCII code for the digit, which is the digit + 48 
+The byte represents the ASCII code for the digit, which is the digit + 48
 
 #### 3rd to last byte: checksum
 
@@ -93,7 +100,7 @@ After reading the 10 bits necessary for a byte (non-idle value + byte + idle val
 
 Then, you must place the bits in reverse order. E.g. (11001001 becomes 10010011)
 
-Finally, the bits must be inverted to arrive at the final byte (10010011 becomes 01101100).
+Finally, the bits must be inverted to arrive at the final byte (10010011 becomes 01101100). *do timers with a 0 idle value also need to be inverted?*
 
 ### Example of interpreting a packet from start to finish
 
@@ -116,7 +123,7 @@ WIP
 - Packet length: need to check
 - Idle value: need to check
 
-can we easily support other non-speedstacks timers? testing needed
+*can we easily support other non-speedstacks timers? testing needed*
 
 ### Useful sources
 
