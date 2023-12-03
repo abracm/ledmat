@@ -53,7 +53,7 @@ int byteNamesFromPositions(byte bytes[],unsigned int length, struct Packet * pac
     packet->digits[3] = bytes[4];
     packet->digits[4] = bytes[5];
     packet->digits[5] = length == 9 ? '0' : bytes[6],
-    packet->checksum = bytes[length - 3];
+    packet->checksum = (unsigned)bytes[length - 3];
     packet->newLine = bytes[length - 2];
     packet->carriageReturn = bytes[length - 1];
     
@@ -87,12 +87,12 @@ bool checksValidDigits(char digits[6]){
     return true;
 }
 
-bool computeChecksum(char digits[6], char checksum){
+bool computeChecksum(char digits[6], unsigned checksum){
     int total_digits = 64; //speedstacks signal checksum begins at 64
     for (int i = 0; i < 6; i++){
         total_digits += digits[i] - '0'; // need to offset the ascii code
     }
-    if (total_digits == checksum){
+    if ((unsigned)total_digits == checksum){
         return true;
     } else {
         return false;
