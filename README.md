@@ -18,6 +18,8 @@ First assemble the hardware according to the schematics. A full tutorial will be
 - Translate the JS bitstream processor into C for the arduino
 - code first prototype of working display
 - add code snipets and examples throughout timer signal protocol
+- think of a better name for the project?
+- github dirtywork - ending fork? and fixing origin on c-processor branch
 
 ## Improvements on existing displays
 
