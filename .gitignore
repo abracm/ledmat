@@ -1,3 +1,7 @@
-/src/*.o
 /*.elf
 /*.hex
+/src/*.xo
+/src/*.o
+/src/*.to
+/src/*.ta
+/src/*.t

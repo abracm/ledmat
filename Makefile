@@ -3,34 +3,33 @@ NAME         = ledmat
 DEVICE       = atmega328p
 PORT         = /dev/ttyACM0
 BAUD         = 115200
-
-COMMFLAGS    = -mmcu=$(DEVICE)
-CPPFLAGS     = -DF_CPU=16000000UL $(COMMFLAGS)
-LDFLAGS      = $(COMMFLAGS)
-CFLAGS       = -Os
-CC           = avr-gcc
-OBJCOPY      = avr-objcopy
-SIZE         = avr-size
-
+CFLAGS.a     = $(CFLAGS)
+XCFLAGS.a    = $(CFLAGS) -Os -DF_CPU=16000000UL -mmcu=$(DEVICE)
+LDLIBS.a     = $(LDLIBS)
+LDLIBS       =
+XCC          = avr-gcc
+XOBJCOPY     = avr-objcopy
+XSIZE        = avr-size
 JSIMPL       = node
 
 
 
 .SUFFIXES:
-.SUFFIXES: .c .o .t
+.SUFFIXES: .c .xo .o .to .ta .t
+
+.c.xo:
+	$(XCC) $(XCFLAG.a)       -o $@ -c $<
 
 .c.o:
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS.a)        -o $@ -c $<
 
-.c.t:
-	$(CC) $(CFLAGS) $(CPPFLAGS) $< -o $@
+.c.to:
+	$(CC) $(CFLAGS.a) -DTEST -o $@ -c $<
+
+.ta.t:
+	$(CC) $(LDFLAGS.a) -o $@ $< $(LDLIBS.a)
 
 
-
-all: $(NAME).hex
-
-$(NAME).hex: $(NAME).elf
-	$(OBJCOPY) -j .text -j .data -O ihex $(NAME).elf $@
 
 sources.c = \
 	src/processor.c \
@@ -38,13 +37,33 @@ sources.c = \
 tests.mjs = \
 	tests/js/processor.mjs \
 
-sources.o = $(sources.c:.c=.o)
+sources.xo = $(sources.c:.c=.xo)
+sources.o  = $(sources.c:.c=.o)
+sources.to = $(sources.c:.c=.to)
+sources.ta = $(sources.c:.c=.ta)
+sources.t  = $(sources.c:.c=.t)
 
-$(sources.o): Makefile
 
-$(NAME).elf: $(sources.o)
-	$(CC) $(LDFLAGS) -o $@ $(sources.o)
-	$(SIZE) $@
+derived-assets = \
+	$(NAME).hex   \
+	$(NAME).elf   \
+	$(sources.xo) \
+	$(sources.o)  \
+	$(sources.to) \
+
+
+
+all: $(derived-assets)
+
+
+$(NAME).hex: $(NAME).elf
+	$(XOBJCOPY) -j .text -j .data -O ihex $(NAME).elf $@
+
+$(sources.xo) $(sources.o) $(sources.to): Makefile
+
+$(NAME).elf: $(sources.xo)
+	$(XCC) $(LDFLAGS) -o $@ $(sources.xo)
+	$(XSIZE) $@
 
 
 
@@ -64,7 +83,8 @@ check: check-node check-c
 
 
 clean:
-	rm -rf $(sources.o) $(NAME).elf $(NAME).hex
+	rm -rf \
+		$(derived-assets)
 
 deploy: $(NAME).hex
 	avrdude \
