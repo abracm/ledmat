@@ -97,6 +97,14 @@ $(sources.c-lint):
 check-c-lint: $(sources.c-lint)
 
 
+.SUFFIXES: .c-clang-tidy
+sources.c-clang-tidy = $(sources.c:.c=.c-clang-tidy)
+$(sources.c-clang-tidy):
+	sh tests/clang-tidy.sh $*.c -- $(CFLAGS.a) -DTEST
+
+check-clang-tidy: $(sources.c-clang-tidy)
+
+
 .SUFFIXES: .c-clang-format
 sources.c-clang-format = $(sources.c:.c=.c-clang-format)
 $(sources.c-clang-format):
