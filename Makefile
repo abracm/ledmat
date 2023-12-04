@@ -96,6 +96,7 @@ check-integration:
 
 
 assert-tests = \
+	tests/assert-deps.sh \
 
 $(assert-tests): ALWAYS
 	sh $@
