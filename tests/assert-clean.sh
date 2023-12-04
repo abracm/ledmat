@@ -11,11 +11,6 @@ if [ -n "$(git status -s)" ]; then
 	exit
 fi
 
-if [ -n "$(git clean -nffdx)" ]; then
-	echo "Already contains untracked files, skipping \"$0\"" >&2
-	exit
-fi
-
 
 . tools/lib.sh
 
