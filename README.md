@@ -132,3 +132,10 @@ WIP
 - Odder's Stacktimer Signal Processor [link](https://github.com/Kubiverse/StackmatSignalProcessor): reference on how to process the stackmat signal bitstream (for Gen 4 timers)
 - JFly's [explanation](https://www.jflei.com/2014/08/21/dialup-stackmat/) on the speedstacks timer signal and reading it in a phone
 - freundTech's [explanation](https://old.reddit.com/r/Cubers/comments/64czya/wip_stackmat_timer_support_for_twistytimer_app/dg19s4y/) on what the speedstacks timer signal bitstream is composed of
+
+#### Migrating an Arduino board to a standalone microcontroller on a breadboard
+
+- https://docs.arduino.cc/built-in-examples/arduino-isp/ArduinoToBreadboard
+- https://www.martyncurrey.com/arduino-atmega-328p-fuse-settings/
+- https://www.instructables.com/Configure-Arduino-IDE-for-Atmega-328P-to-Use-8MHz-/
+- https://www.instructables.com/USBASP-Bootloading-a-ATMega328p-with-a-8mhZ-intern/
