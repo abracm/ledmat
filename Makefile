@@ -115,7 +115,7 @@ $(sources.c-clang-format):
 check-clang-format: $(sources.c-clang-format)
 
 
-check-lint: check-c-lint check-clang-format
+check-lint: check-c-lint check-clang-tidy check-clang-format
 
 
 check-integration:
