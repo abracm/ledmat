@@ -86,7 +86,24 @@ $(sources.t-run):
 check-c: $(sources.t-run)
 
 
-check: check-node check-c
+check-t: check-node check-c
+
+
+check-lint:
+
+
+check-integration:
+
+
+assert-tests = \
+
+$(assert-tests): ALWAYS
+	sh $@
+
+check-asserts: $(assert-tests)
+
+
+check: check-t check-lint check-integration check-asserts
 
 
 
@@ -101,3 +118,6 @@ deploy: $(NAME).hex
 		-P $(PORT)   \
 		-b $(BAUD)   \
 		-U flash:w:$(NAME).hex:i
+
+
+ALWAYS:
