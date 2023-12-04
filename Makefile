@@ -7,6 +7,7 @@ CFLAGS.a     = $(CFLAGS)
 XCFLAGS.a    = $(CFLAGS) -Os -DF_CPU=16000000UL -mmcu=$(DEVICE)
 LDLIBS.a     = $(LDLIBS)
 LDLIBS       =
+EXEC         = ./
 XCC          = avr-gcc
 XOBJCOPY     = avr-objcopy
 XSIZE        = avr-size
@@ -31,11 +32,8 @@ JSIMPL       = node
 
 
 
-sources.c = \
-	src/processor.c \
-
-tests.mjs = \
-	tests/js/processor.mjs \
+all:
+include deps.mk
 
 sources.xo = $(sources.c:.c=.xo)
 sources.o  = $(sources.c:.c=.o)
@@ -50,6 +48,8 @@ derived-assets = \
 	$(sources.xo) \
 	$(sources.o)  \
 	$(sources.to) \
+	$(sources.ta) \
+	$(sources.t)  \
 
 
 
@@ -60,6 +60,9 @@ $(NAME).hex: $(NAME).elf
 	$(XOBJCOPY) -j .text -j .data -O ihex $(NAME).elf $@
 
 $(sources.xo) $(sources.o) $(sources.to): Makefile
+
+$(sources.ta):
+	$(AR) $(ARFLAGS) $@ $?
 
 $(NAME).elf: $(sources.xo)
 	$(XCC) $(LDFLAGS) -o $@ $(sources.xo)
@@ -75,7 +78,12 @@ $(tests.mjs-run):
 check-node: $(tests.mjs-run)
 
 
-check-c:
+.SUFFIXES: .t-run
+sources.t-run = $(sources.t:.t=.t-run)
+$(sources.t-run):
+	$(EXEC)$*.t
+
+check-c: $(sources.t-run)
 
 
 check: check-node check-c
