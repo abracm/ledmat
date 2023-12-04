@@ -16,7 +16,7 @@ JSIMPL       = node
 
 
 .SUFFIXES:
-.SUFFIXES: .c .xo .o .to .ta .t
+.SUFFIXES: .c .xo .o .to .ta .t .elf .hex
 
 .c.xo:
 	$(XCC) $(XCFLAG.a)       -o $@ -c $<
@@ -29,6 +29,9 @@ JSIMPL       = node
 
 .ta.t:
 	$(CC) $(LDFLAGS.a) -o $@ $< $(LDLIBS.a)
+
+.elf.hex:
+	$(XOBJCOPY) -j .text -j .data -O ihex $< $@
 
 
 
@@ -55,9 +58,6 @@ derived-assets = \
 
 all: $(derived-assets)
 
-
-$(NAME).hex: $(NAME).elf
-	$(XOBJCOPY) -j .text -j .data -O ihex $(NAME).elf $@
 
 $(sources.xo) $(sources.o) $(sources.to): Makefile
 
