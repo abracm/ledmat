@@ -89,7 +89,15 @@ check-c: $(sources.t-run)
 check-t: check-node check-c
 
 
-check-lint:
+.SUFFIXES: .c-clang-format
+sources.c-clang-format = $(sources.c:.c=.c-clang-format)
+$(sources.c-clang-format):
+	sh tests/c-format.sh $*.c
+
+check-clang-format: $(sources.c-clang-format)
+
+
+check-lint: check-clang-format
 
 
 check-integration:

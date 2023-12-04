@@ -1,0 +1,12 @@
+UseTab: Always
+IndentWidth: 8
+ColumnLimit: 80
+AllowShortFunctionsOnASingleLine: None
+AlwaysBreakAfterReturnType: All
+AlignAfterOpenBracket: BlockIndent
+ContinuationIndentWidth: 8
+MaxEmptyLinesToKeep: 3
+AlignConsecutiveMacros: Consecutive
+BinPackArguments: false
+BinPackParameters: false
+InsertTrailingCommas: Wrapped
