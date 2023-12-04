@@ -119,11 +119,13 @@ check-lint: check-c-lint check-clang-format
 check-integration:
 
 
+tests/assert-clean.sh: all
 assert-tests = \
-	tests/assert-deps.sh \
+	tests/assert-deps.sh  \
+	tests/assert-clean.sh \
 
 $(assert-tests): ALWAYS
-	sh $@
+	+sh $@
 
 check-asserts: $(assert-tests)
 
