@@ -56,6 +56,8 @@ derived-assets = \
 
 
 
+## Default target.  Builds all artifacts required for testing
+## and installation.
 all: $(derived-assets)
 
 
@@ -130,14 +132,20 @@ $(assert-tests): ALWAYS
 check-asserts: $(assert-tests)
 
 
+## Run all tests.  Each test suite is isolated, so that a parallel
+## build can run tests at the same time.  The required artifacts
+## are created if missing.
 check: check-t check-lint check-integration check-asserts
 
 
 
+## Remove *all* derived artifacts produced during the build.
+## A dedicated test asserts that this is always true.
 clean:
 	rm -rf \
 		$(derived-assets)
 
+## Flash the binary to the $(DEVICE) available at $(PORT).
 deploy: $(NAME).hex
 	avrdude \
 		-p $(DEVICE) \
@@ -145,6 +153,12 @@ deploy: $(NAME).hex
 		-P $(PORT)   \
 		-b $(BAUD)   \
 		-U flash:w:$(NAME).hex:i
+
+
+MAKEFILE = Makefile
+## Show this help.
+help:
+	cat $(MAKEFILE) | sh tools/makehelp.sh
 
 
 ALWAYS:
