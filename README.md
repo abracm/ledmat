@@ -21,6 +21,14 @@ First assemble the hardware according to the schematics. A full tutorial will be
 - think of a better name for the project?
 - github dirtywork - ending fork? and fixing origin on c-processor branch
 
+### MVP for Saideira Brasília 2023
+
+0. (André) fix lints
+1. (Pedro) finish coding processor.c
+2. (André) reading bitstream from audio jack to input into processor.c
+3. (Pedro) read result from processor.c and display in led matrix (MD_PAROLA, etc.) - we don't need to display thousands of seconds - take code from ledmat
+4. (Pedro) encasing and power (maybe powerbank) prototype for hardware
+
 ## Improvements on existing displays
 
 - we could show the state before the start of the attempt instead of just zeros - show when hands are on timer, when competitor is ready
