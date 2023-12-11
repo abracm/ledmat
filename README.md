@@ -140,6 +140,7 @@ WIP
 - Odder's Stacktimer Signal Processor [link](https://github.com/Kubiverse/StackmatSignalProcessor): reference on how to process the stackmat signal bitstream (for Gen 4 timers)
 - JFly's [explanation](https://www.jflei.com/2014/08/21/dialup-stackmat/) on the speedstacks timer signal and reading it in a phone
 - freundTech's [explanation](https://old.reddit.com/r/Cubers/comments/64czya/wip_stackmat_timer_support_for_twistytimer_app/dg19s4y/) on what the speedstacks timer signal bitstream is composed of
+- Dan Smith [testing](https://youtu.be/1QEm99bT8WQ?si=v6V7CJI6A0WZBTTA) what causes reset issues in Gen 5 timers
 
 #### Migrating an Arduino board to a standalone microcontroller on a breadboard
 
