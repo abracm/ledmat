@@ -29,7 +29,7 @@ JSIMPL       = node
 	$(CC) $(LDFLAGS.a) -o $@ $< $(LDLIBS.a)
 
 .elf.hex:
-	objcopy -j .text -j .data -O ihex $< $@
+	avr-objcopy -j .text -j .data -O ihex $< $@
 
 
 
@@ -66,7 +66,7 @@ $(sources.ea):
 
 $(NAME).elf: $(sources.xo)
 	$(XCC) $(LDFLAGS) -o $@ $(sources.xo)
-	size $@
+	avr-size $@
 
 
 
