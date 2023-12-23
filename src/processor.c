@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 
+static const unsigned char SMALL = 9;
 
 typedef char byte;
 
@@ -25,9 +26,10 @@ static const char VALID_STATES[] = {
 	STATE_STOPPED,
 };
 
-#define BIG          10
-#define SMALL        9
-#define DIGITS_COUNT 6
+enum Constants {
+	DIGITS_COUNT = 6,
+};
+
 struct Packet {
 	char         state;
 	char         digits[DIGITS_COUNT];
@@ -42,7 +44,7 @@ byte_names_from_positions(
 ) {
 
 	packet->state = bytes[0];
-	for (unsigned short i = 0; i < DIGITS_COUNT; i++) {
+	for (int i = 0; i < DIGITS_COUNT; i++) {
 		packet->digits[i] = bytes[i + 1];
 	}
 	if (length == SMALL) {
