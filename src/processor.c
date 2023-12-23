@@ -38,7 +38,17 @@ struct Packet {
 	char         carriage_return;
 };
 
-static int
+struct Status {
+	char           state;
+	unsigned short minutes;
+	unsigned short decaseconds;
+	unsigned short seconds;
+	unsigned short deciseconds;
+	unsigned short centiseconds;
+	unsigned short miliseconds;
+};
+
+static void
 decode_packet(const byte bytes[], unsigned int length, struct Packet *packet) {
 
 	packet->state = bytes[0];
@@ -51,8 +61,6 @@ decode_packet(const byte bytes[], unsigned int length, struct Packet *packet) {
 	packet->checksum        = (unsigned int)bytes[length - 3];
 	packet->newline         = bytes[length - 2];
 	packet->carriage_return = bytes[length - 1];
-
-	return 0;
 }
 
 static bool
@@ -78,6 +86,12 @@ checks_valid_digits(const char digits[DIGITS_COUNT]) {
 	return true;
 }
 
+static unsigned short
+digit_to_number(char digit) {
+	// need to offset the ascii code
+	return (unsigned short)digit - (char)'0';
+}
+
 static const unsigned int CHECKSUM_INITIAL_VALUE =
 	64;  // speedstacks signal checksum begins at 64
 
@@ -85,8 +99,7 @@ static bool
 compute_checksum(const char digits[DIGITS_COUNT], const unsigned int checksum) {
 	unsigned int total_digits = CHECKSUM_INITIAL_VALUE;
 	for (int i = 0; i < DIGITS_COUNT; i++) {
-		total_digits += (unsigned int)digits[i] -
-		                (char)'0';  // need to offset the ascii code
+		total_digits += digit_to_number(digits[i]);
 	}
 	return total_digits == checksum;
 }
@@ -94,21 +107,31 @@ compute_checksum(const char digits[DIGITS_COUNT], const unsigned int checksum) {
 
 
 int
-decode_status(byte bytes[sizeof(struct Packet)], struct Packet *packet) {
+decode_status(byte bytes[sizeof(struct Packet)], struct Status *status) {
 
-	decode_packet(bytes, sizeof(struct Packet), packet);
+	struct Packet packet;
 
-	if (!checks_valid_state(packet->state)) {
+	decode_packet(bytes, sizeof(struct Packet), &packet);
+
+	if (!checks_valid_state(packet.state)) {
 		return 1;
 	}
 
-	if (!checks_valid_digits(packet->digits)) {
+	if (!checks_valid_digits(packet.digits)) {
 		return 1;
 	}
 
-	if (!compute_checksum(packet->digits, packet->checksum)) {
+	if (!compute_checksum(packet.digits, packet.checksum)) {
 		return 1;
 	}
+
+	status->state        = packet.state;
+	status->minutes      = digit_to_number(packet.digits[0]);
+	status->decaseconds  = digit_to_number(packet.digits[1]);
+	status->seconds      = digit_to_number(packet.digits[2]);
+	status->deciseconds  = digit_to_number(packet.digits[3]);
+	status->centiseconds = digit_to_number(packet.digits[4]);
+	status->miliseconds  = digit_to_number(packet.digits[5]);  // NOLINT
 
 	return 0;
 }
@@ -128,8 +151,8 @@ main(void) {
 		'\n',
 		'\r',
 	};
-	struct Packet packet;
-	decode_status(bytes, &packet);
+	struct Status status;
+	decode_status(bytes, &status);
 	printf("sizeof(struct Packet): %ld\n", sizeof(struct Packet));
 	return 0;
 }

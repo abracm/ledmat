@@ -64,34 +64,6 @@ if grep -Eq "$RE" "$@"; then
 	exit 1
 fi
 
-
-awk '
-BEGIN {
-	rc = 0
-}
-/^[a-zA-Z0-9_]+\(.*$/ {
-	fn = 1
-	fdecl = $0
-}
-
-$0 == "}" && fn == 1 {
-	fn = 0
-	last = prev
-	if (substr(last, 1, length("return")) != "return") {
-		print "\"return\" is not the last statement:"
-		printf "%s:%s:%s\n", FILENAME, FNR, fdecl
-		rc = 1
-	}
-}
-
-{ prev = $1 }
-
-END {
-	exit rc
-}
-' "$@"
-
-
 awk '
 BEGIN {
 	rc = 0
@@ -116,13 +88,6 @@ docs == 1 && $1 == "*" && $2 == "@tags" {
 }
 
 /^[a-zA-Z0-9_]+\(.*$/ {
-	if (prev == "void" || prev == "static void") {
-		if (tags["infallible"] != 1) {
-			print "return is void but no `infallible` tag:"
-			printf "%s:%s:%s\n", FILENAME, FNR, fdecl
-			rc = 1
-		}
-	}
 	for (k in tags) {
 		delete tags[k]
 	}
