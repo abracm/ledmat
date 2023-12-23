@@ -1,11 +1,11 @@
 ---
 Checks: "
         *,
+        -altera-struct-pack-align,
         -altera-unroll-loops,
         -llvmlibc-restrict-system-libc-headers,
         "
 WarningsAsErrors: "*"
-HeaderFilterRegex: ".*h"
 CheckOptions:
   - key: bugprone-reserved-identifier.AllowedIdentifiers
     value: '_POSIX_C_SOURCE;_'
@@ -17,6 +17,8 @@ CheckOptions:
     value: 'h'
   - key: readability-identifier-naming.EnumCase
     value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: lower_case
   - key: readability-identifier-naming.GlobalConstantCase
     value: UPPER_CASE
   - key: readability-identifier-naming.MemberCase
@@ -25,3 +27,5 @@ CheckOptions:
     value: CamelCase
   - key: readability-identifier-naming.UnionCase
     value: CamelCase
+  - key: readability-identifier-naming.VariableCase
+    value: lower_case
