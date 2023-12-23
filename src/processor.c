@@ -39,9 +39,7 @@ struct Packet {
 };
 
 static int
-byte_names_from_positions(
-	const byte bytes[], unsigned int length, struct Packet *packet
-) {
+decode_packet(const byte bytes[], unsigned int length, struct Packet *packet) {
 
 	packet->state = bytes[0];
 	for (int i = 0; i < DIGITS_COUNT; i++) {
@@ -96,10 +94,29 @@ compute_checksum(const char digits[DIGITS_COUNT], const unsigned int checksum) {
 
 
 int
-decode_packet(void) {
-	struct Packet packet;
+decode_status(byte bytes[sizeof(struct Packet)], struct Packet *packet) {
 
-	byte bytes[sizeof(packet)] = {
+	decode_packet(bytes, sizeof(struct Packet), packet);
+
+	if (!checks_valid_state(packet->state)) {
+		return 1;
+	}
+
+	if (!checks_valid_digits(packet->digits)) {
+		return 1;
+	}
+
+	if (!compute_checksum(packet->digits, packet->checksum)) {
+		return 1;
+	}
+
+	return 0;
+}
+
+#ifdef TEST
+int
+main(void) {
+	byte bytes[sizeof(struct Packet)] = {
 		'S',
 		'0',
 		'0',
@@ -111,27 +128,8 @@ decode_packet(void) {
 		'\n',
 		'\r',
 	};
-	byte_names_from_positions(bytes, sizeof(packet), &packet);
-
-	if (!checks_valid_state(packet.state)) {
-		return 1;
-	}
-
-	if (!checks_valid_digits(packet.digits)) {
-		return 1;
-	}
-
-	if (!compute_checksum(packet.digits, packet.checksum)) {
-		return 1;
-	}
-
-	return 0;
-}
-
-#ifdef TEST
-int
-main(void) {
-	decode_packet();
+	struct Packet packet;
+	decode_status(bytes, &packet);
 	printf("sizeof(struct Packet): %ld\n", sizeof(struct Packet));
 	return 0;
 }

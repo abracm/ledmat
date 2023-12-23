@@ -1,2 +1,2 @@
 int
-decode_packet(void);
+decode_status(void);
