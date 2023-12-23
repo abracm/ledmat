@@ -1,89 +1,76 @@
 #include <stdbool.h>
 #include <stdio.h>
 
-/*
-export const isPacketSizeCorrect = bytes => {
-	return bytes.length === 9 || bytes.length === 10;
-};
-
-export const byteNamesFromPositions = bytes => {
-	assert(isPacketSizeCorrect(bytes));
-
-	const state          = bytes[0];
-	const digits         = bytes.slice(1, bytes.length - 3);
-	const checksum       = bytes[bytes.length - 3];
-	const newLine        = bytes[bytes.length - 2];
-	const carriageReturn = bytes[bytes.length - 1];
-	return {
-		state,
-		digits: bytes.length === 9 ? digits.concat("0") : digits,
-		checksum,
-		newLine,
-		carriageReturn,
-	};
-};
-*/
 
 typedef char byte;
 
-char VALID_STATES[] = {
-	'I', /// timer was reset
-	'C', /// both hands are on the timer
-	'A', /// timer is ready to start
-	' ', /// timer is running, no hands are touching it
-	'L', /// left  hand is on the timer
-	'R', /// right hand is on the timer
-	'S', /// timer is now stopper
+enum State {
+	STATE_RESET      = 'I',  /// timer was reset
+	STATW_READY      = 'A',  /// timer is ready to start
+	STATE_RUNNING    = ' ',  /// timer is running, no hands are touching it
+	STATE_BOTH_HANDS = 'C',  /// both hands are on the timer
+	STATE_LEFT_HAND  = 'L',  /// left  hand is on the timer
+	STATE_RIGHT_HAND = 'R',  /// right hand is on the timer
+	STATE_STOPPED    = 'S',  /// timer is now stopped
 };
 
+// FIXME: line break
+static const char VALID_STATES[] = {
+	STATE_RESET,
+	STATW_READY,
+	STATE_RUNNING,
+	STATE_BOTH_HANDS,
+	STATE_LEFT_HAND,
+	STATE_RIGHT_HAND,
+	STATE_STOPPED,
+};
+
+#define BIG          10
+#define SMALL        9
+#define DIGITS_COUNT 6
 struct Packet {
-	char state;
-	char digits[6]; // replace magic number - comes from packet length
+	char         state;
+	char         digits[DIGITS_COUNT];
 	unsigned int checksum;
-	char newLine;
-	char carriageReturn;
+	char         newline;
+	char         carriage_return;
 };
 
 static int
-byteNamesFromPositions(
-	byte bytes[], unsigned int length, struct Packet *packet
+byte_names_from_positions(
+	const byte bytes[], unsigned int length, struct Packet *packet
 ) {
 
 	packet->state = bytes[0];
-	packet->digits[0] = bytes[1];
-	packet->digits[1] = bytes[2];
-	packet->digits[2] = bytes[3];
-	packet->digits[3] = bytes[4];
-	packet->digits[4] = bytes[5];
-	packet->digits[5] = length == 9 ? '0' : bytes[6],
-	packet->checksum = (unsigned int)bytes[length - 3];
-	packet->newLine = bytes[length - 2];
-	packet->carriageReturn = bytes[length - 1];
+	for (unsigned short i = 0; i < DIGITS_COUNT; i++) {
+		packet->digits[i] = bytes[i + 1];
+	}
+	if (length == SMALL) {
+		packet->digits[DIGITS_COUNT - 1] = '0';
+	}
+	packet->checksum        = (unsigned int)bytes[length - 3];
+	packet->newline         = bytes[length - 2];
+	packet->carriage_return = bytes[length - 1];
 
 	return 0;
 }
 
 static bool
-checksValidState(char state) {
+checks_valid_state(char state) {
+	bool has_valid_state = false;
 
-	bool hasValidState = false;
-
-	for (int i = 0; i < 8; i++) {
+	for (unsigned int i = 0; i < sizeof(VALID_STATES); i++) {
 		if (VALID_STATES[i] == state) {
-			hasValidState = true;
+			has_valid_state = true;
 		}
 	}
 
-	if (hasValidState == false) {
-		return false;
-	} else {
-		return true;
-	}
+	return has_valid_state;
 }
 
 static bool
-checksValidDigits(char digits[6]) {
-	for (int i = 0; i < 6; i++) {
+checks_valid_digits(const char digits[DIGITS_COUNT]) {
+	for (int i = 0; i < DIGITS_COUNT; i++) {
 		if (digits[i] < '0' || digits[i] > '9') {
 			return false;
 		}
@@ -91,28 +78,26 @@ checksValidDigits(char digits[6]) {
 	return true;
 }
 
+static const unsigned int CHECKSUM_INITIAL_VALUE =
+	64;  // speedstacks signal checksum begins at 64
+
 static bool
-computeChecksum(char digits[6], unsigned int checksum) {
-	unsigned int total_digits =
-		64; // speedstacks signal checksum begins at 64
-	for (int i = 0; i < 6; i++) {
+compute_checksum(const char digits[DIGITS_COUNT], const unsigned int checksum) {
+	unsigned int total_digits = CHECKSUM_INITIAL_VALUE;
+	for (int i = 0; i < DIGITS_COUNT; i++) {
 		total_digits += (unsigned int)digits[i] -
-				(char)'0'; // need to offset the ascii code
+		                (char)'0';  // need to offset the ascii code
 	}
-	if (total_digits == checksum) {
-		return true;
-	} else {
-		return false;
-	}
+	return total_digits == checksum;
 }
 
 
 
-
 int
-decodePacket(void) {
+decode_packet(void) {
+	struct Packet packet;
 
-	byte bytes[10] = {
+	byte bytes[sizeof(packet)] = {
 		'S',
 		'0',
 		'0',
@@ -124,19 +109,17 @@ decodePacket(void) {
 		'\n',
 		'\r',
 	};
-	unsigned int length = 10;
-	struct Packet packet;
-	byteNamesFromPositions(bytes, length, &packet);
+	byte_names_from_positions(bytes, sizeof(packet), &packet);
 
-	if (!checksValidState(packet.state)) {
+	if (!checks_valid_state(packet.state)) {
 		return 1;
 	}
 
-	if (!checksValidDigits(packet.digits)) {
+	if (!checks_valid_digits(packet.digits)) {
 		return 1;
 	}
 
-	if (!computeChecksum(packet.digits, packet.checksum)) {
+	if (!compute_checksum(packet.digits, packet.checksum)) {
 		return 1;
 	}
 
@@ -146,49 +129,8 @@ decodePacket(void) {
 #ifdef TEST
 int
 main(void) {
-    decodePacket();
-    return 0;
+	decode_packet();
+	printf("sizeof(struct Packet): %ld\n", sizeof(struct Packet));
+	return 0;
 }
 #endif
-
-/*
-export const decodePacket = bytes => {
-	if (!isPacketSizeCorrect(bytes)) {
-		return null;
-	}
-
-	const { state, digits, checksum } = byteNamesFromPositions(bytes);
-
-	if (!VALID_STATES.has(state)) {
-		return null;
-	}
-
-	if (!digits.every(d => VALID_DIGITS.has(d))) {
-		return null;
-	}
-
-	if (checksum.charCodeAt(0) !== computeChecksum(digits)) {
-		return null;
-	}
-
-	const [
-		minutes,
-		decaseconds,
-		seconds,
-		deciseconds,
-		centiseconds,
-		milliseconds,
-	] = digits.map(digitToNumber);
-
-	return {
-		state,
-		minutes,
-		decaseconds,
-		seconds,
-		deciseconds,
-		centiseconds,
-		milliseconds,
-	};
-};
-
-*/
