@@ -7,7 +7,7 @@ BEGIN {
 	msg = "function not on the start of the line:"
 }
 
-/^[a-zA-Z0-9_]+ .+\(/ {
+/^[a-zA-Z0-9_]+ [^=]+\(/ {
 	if (rc == 0) {
 		print msg
 	}

@@ -12,7 +12,7 @@ fi
 R="$(mkdtemp)"
 trap 'rm -rf "$R"' EXIT
 
-cp -pR ./ "$R"
+cp -LpR ./ "$R"
 cd "$R"
 
 
