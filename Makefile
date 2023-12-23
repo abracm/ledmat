@@ -110,7 +110,7 @@ check-clang-tidy: $(sources.c-clang-tidy)
 .SUFFIXES: .c-clang-format
 sources.c-clang-format = $(sources.c:.c=.c-clang-format)
 $(sources.c-clang-format):
-	sh tests/c-format.sh $*.c
+	sh tests/clang-format.sh $*.c
 
 check-clang-format: $(sources.c-clang-format)
 
