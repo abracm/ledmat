@@ -31,25 +31,31 @@ help() {
 		- .to: compiled with -DTEST so it can expose its embedded unit
 		  tests;
 
-		We also have 2 aggregate files:
-		- .ta: an ar(1)-chive that includes all the .o dependencies the
-		  $NAME.ta, plus the $NAME.to object.  The goal is to have
-		  "dep1.o", "dep2.o", ... "depN.o" included in the archive,
-		  alongside "$NAME.to", so that recompiling "depN.o" would
-		  replace only this file in the archive;
-		- .t: an executable "$NAME.t" derived from just linking together
-		  all the objects inside a ".ta".  Since the "main()" function
-		  was only exposed in the "$NAME.to" via the -DTEST flag, this
-		  executable is the runnable instance of all unit tests present
-		  in "$NAME.c".  Its exit code determines if its test suite
-		  execution is successful.
+		We also have 1 aggregate file:
+		- .ea: an **e**xecutable **a**rchive, made with ar(1), that
+		  includes all the .o dependencies required for linking, so that
+		  one can have only the archive as the linker input, i.e.
+		  `cc -o example.bin example.ea`.  This way we don't need
+		  separate targets for each executable, and we can instead deal
+		  separately with dependencies and linking, but without specific
+		  file listing for each case.  We use an ar-chive to exploit the
+		  fact that a) it can replace existing files with the same name
+		  and b) the $? macro in make(1) gives us all the out-of-date
+		  dependencies, so our rule in the Makefile is usually a simple
+		  `$(AR) $(ARFLAGS) $@ $?`.  This way each .ea file lists its
+		  dependency separately, and the building of the .ea file is
+		  taken care of, in the same way that the linkage into an
+		  executable is also taken care of.  For running unit tests, we
+		  include as a dependency of "$NAME.ea" the "$NAME.to" file,
+		  which is the object code of "$NAME.c" compiled with the -DTEST
+		  flag.  This exposes a main() function for running unit tests.
 
 		Also in order to run the unit tests without having to relink
 		them on each run, we have:
-		- .t-run: a dedicated virtual target that does nothing but
+		- .bin-check: a dedicated virtual target that does nothing but
 		  execute the tests.  In order to assert the binaries exist,
-		  each "$NAME.t-run" virtual target depends on the equivalent
-		  "$NAME".t physical target.
+		  each "$NAME.bin-check" virtual target depends on the
+		  equivalent "$NAME.check" physical target.
 
 		There are 2 types of dependencies that are generated:
 		1. self dependencies;
@@ -64,12 +70,14 @@ help() {
 		  orinal $NAME.c file, all we do is say that whenever the public
 		  interface of these binaries change, they need to be
 		  recompiled;
-		- $NAME.ta: $NAME.to
 
-		  We make sure to include in each test archive (ta) file its own
-		  binary with unit tests.  We include the "depN.o" dependencies
-		  later;
-		- $NAME.t-run: $NAME.t
+		- $NAME.ea: $NAME.to
+
+		  We make sure to include in each executable archive (.ea) file
+		  its own binary with unit tests.  We include the "depN.o"
+		  dependencies later;
+
+		- $NAME.bin-check: $NAME.bin
 
 		  Enforce that the binary exists before we run them.
 
@@ -81,10 +89,11 @@ help() {
 		  We'll recompile our file when its public header changes.  When
 		  only the body of the code changes we don't recompile, only
 		  later relink;
-		- $NAME.ta: dep1.o dep2.o ... depN.o
 
-		  Make sure to include all required dependencies in the $NAME.t
-		  binary so that the later linking works properly.
+		- $NAME.ea: dep1.o dep2.o ... depN.o
+
+		  Make sure to include all required dependencies in the
+		  $NAME.bin binary so that the later linking works properly.
 
 		So if we have file1.c, file2.c and file3.c with their respective
 		headers, where file2.c and file3.c depend of file1.c, i.e. they
@@ -95,22 +104,22 @@ help() {
 		  file2.o file2.lo file2.to: file2.h
 		  file3.o file3.lo file3.to: file3.h
 
-		  file1.ta: file1.to
-		  file2.ta: file2.to
-		  file3.ta: file3.to
+		  file1.ea: file1.to
+		  file2.ea: file2.to
+		  file3.ea: file3.to
 
-		  file1.t-run: file1.t
-		  file2.t-run: file2.t
-		  file3.t-run: file3.t
+		  file1.bin-check: file1.bin
+		  file2.bin-check: file2.bin
+		  file3.bin-check: file3.bin
 
 
 		  file1.o file1.lo file1.to:
 		  file2.o file2.lo file2.to: file1.h
 		  file3.o file3.lo file3.to: file1.h file2.h
 
-		  file1.ta:
-		  file2.ta: file1.o
-		  file3.ta: file1.o file2.o
+		  file1.ea:
+		  file2.ea: file1.o
+		  file3.ea: file1.o file2.o
 
 		This ensures that only the minimal amount of files need to get
 		recompiled, but no less.
@@ -179,12 +188,12 @@ self_header_deps() {
 	printf '%s.o\t%s.lo\t%s.to:\t%s.h\n' "$1" "$1" "$1" "$1"
 }
 
-self_ta_deps() {
-	printf '%s.ta:\t%s.to\n' "$1" "$1"
+self_ea_deps() {
+	printf '%s.ea:\t%s.to\n' "$1" "$1"
 }
 
-self_trun_deps() {
-	printf '%s.t-run:\t%s.t\n' "$1" "$1"
+self_bincheck_deps() {
+	printf '%s.bin-check:\t%s.bin\n' "$1" "$1"
 }
 
 deps_for() {
@@ -212,14 +221,14 @@ rebuild_deps() {
 
 archive_deps() {
 	printf '\n'
-	printf '%s.ta:' "$1"
+	printf '%s.ea:' "$1"
 	printf ' %s' $(deps_for "$1" .o) | sed 's| *$||'
 }
 
 
 each_f self_header_deps "$@"
-each_f self_ta_deps     "$@"
-each_f self_trun_deps   "$@"
+each_f self_ea_deps     "$@"
+each_f self_bincheck_deps   "$@"
 
 each_f rebuild_deps     "$@"
 each_f archive_deps     "$@"

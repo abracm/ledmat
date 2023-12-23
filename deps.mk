@@ -11,13 +11,13 @@ tests.mjs = \
 
 src/processor.o	src/processor.lo	src/processor.to:	src/processor.h
 
-src/processor.ta:	src/processor.to
+src/processor.ea:	src/processor.to
 
-src/processor.t-run:	src/processor.t
+src/processor.bin-check:	src/processor.bin
 
 
 src/processor.o	src/processor.lo	src/processor.to:
 
-src/processor.ta:
+src/processor.ea:
 
 tests/js/processor.mjs-t: tests/js/processor.mjs

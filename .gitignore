@@ -3,5 +3,5 @@
 /src/*.xo
 /src/*.o
 /src/*.to
-/src/*.ta
-/src/*.t
+/src/*.ea
+/src/*.bin

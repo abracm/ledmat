@@ -16,7 +16,7 @@ JSIMPL       = node
 
 
 .SUFFIXES:
-.SUFFIXES: .c .xo .o .to .ta .t .elf .hex
+.SUFFIXES: .c .xo .o .to .ea .bin .elf .hex
 
 .c.xo:
 	$(XCC) $(XCFLAG.a)       -o $@ -c $<
@@ -27,7 +27,7 @@ JSIMPL       = node
 .c.to:
 	$(CC) $(CFLAGS.a) -DTEST -o $@ -c $<
 
-.ta.t:
+.ea.bin:
 	$(CC) $(LDFLAGS.a) -o $@ $< $(LDLIBS.a)
 
 .elf.hex:
@@ -38,21 +38,21 @@ JSIMPL       = node
 all:
 include deps.mk
 
-sources.xo = $(sources.c:.c=.xo)
-sources.o  = $(sources.c:.c=.o)
-sources.to = $(sources.c:.c=.to)
-sources.ta = $(sources.c:.c=.ta)
-sources.t  = $(sources.c:.c=.t)
+sources.xo  = $(sources.c:.c=.xo)
+sources.o   = $(sources.c:.c=.o)
+sources.to  = $(sources.c:.c=.to)
+sources.ea  = $(sources.c:.c=.ea)
+sources.bin = $(sources.c:.c=.bin)
 
 
 derived-assets = \
-	$(NAME).hex   \
-	$(NAME).elf   \
-	$(sources.xo) \
-	$(sources.o)  \
-	$(sources.to) \
-	$(sources.ta) \
-	$(sources.t)  \
+	$(NAME).hex    \
+	$(NAME).elf    \
+	$(sources.xo)  \
+	$(sources.o)   \
+	$(sources.to)  \
+	$(sources.ea)  \
+	$(sources.bin) \
 
 
 
@@ -63,7 +63,7 @@ all: $(derived-assets)
 
 $(sources.xo) $(sources.o) $(sources.to): Makefile
 
-$(sources.ta):
+$(sources.ea):
 	$(AR) $(ARFLAGS) $@ $?
 
 $(NAME).elf: $(sources.xo)
@@ -80,12 +80,12 @@ $(tests.mjs-run):
 check-node: $(tests.mjs-run)
 
 
-.SUFFIXES: .t-run
-sources.t-run = $(sources.t:.t=.t-run)
-$(sources.t-run):
-	$(EXEC)$*.t
+.SUFFIXES: .bin-check
+sources.bin-check = $(sources.c:.c=.bin-check)
+$(sources.bin-check):
+	$(EXEC)$*.bin
 
-check-c: $(sources.t-run)
+check-c: $(sources.bin-check)
 
 
 check-t: check-node check-c
