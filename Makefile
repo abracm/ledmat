@@ -89,31 +89,16 @@ check-c: $(sources.bin-check)
 check-t: check-node check-c
 
 
-.SUFFIXES: .c-lint
-sources.c-lint = $(sources.c:.c=.c-lint)
-$(sources.c-lint):
-	sh tests/c-lint.sh $*.c
+.SUFFIXES: .clang-format .clang-tidy .c-lint
+lints = \
+	$(sources.c:.c=.clang-format) \
+	$(sources.c:.c=.clang-tidy)   \
+	$(sources.c:.c=.c-lint)       \
 
-check-c-lint: $(sources.c-lint)
+$(lints):
+	sh tests/"`echo "$@" | cut -d. -f2`".sh $*.c
 
-
-.SUFFIXES: .c-clang-tidy
-sources.c-clang-tidy = $(sources.c:.c=.c-clang-tidy)
-$(sources.c-clang-tidy):
-	sh tests/clang-tidy.sh $*.c -- $(CFLAGS.a) -DTEST
-
-check-clang-tidy: $(sources.c-clang-tidy)
-
-
-.SUFFIXES: .c-clang-format
-sources.c-clang-format = $(sources.c:.c=.c-clang-format)
-$(sources.c-clang-format):
-	sh tests/clang-format.sh $*.c
-
-check-clang-format: $(sources.c-clang-format)
-
-
-check-lint: check-c-lint check-clang-tidy check-clang-format
+check-lint: $(lints)
 
 
 check-integration:
