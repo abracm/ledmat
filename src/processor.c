@@ -48,6 +48,28 @@ struct Status {
 	unsigned short miliseconds;
 };
 
+enum HighValue {
+	LOW  = 0,
+	HIGH = 1,
+};
+
+static unsigned char
+decode_byte(
+	unsigned int         length,
+	const enum HighValue bits[],
+	enum HighValue       high_value
+) {
+
+	unsigned char byte = 0;
+
+	for (unsigned int i = 1; i < length - 1; i++) {
+		byte <<= (unsigned char)1;
+		byte |= (unsigned char)(bits[i] == high_value ? 1 : 0);
+	}
+
+	return byte;
+}
+
 static void
 decode_packet(const byte bytes[], unsigned int length, struct Packet *packet) {
 
