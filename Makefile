@@ -9,8 +9,6 @@ LDLIBS.a     = $(LDLIBS)
 LDLIBS       =
 EXEC         = ./
 XCC          = avr-gcc
-XOBJCOPY     = avr-objcopy
-XSIZE        = avr-size
 JSIMPL       = node
 
 
@@ -31,7 +29,7 @@ JSIMPL       = node
 	$(CC) $(LDFLAGS.a) -o $@ $< $(LDLIBS.a)
 
 .elf.hex:
-	$(XOBJCOPY) -j .text -j .data -O ihex $< $@
+	objcopy -j .text -j .data -O ihex $< $@
 
 
 
@@ -68,7 +66,7 @@ $(sources.ea):
 
 $(NAME).elf: $(sources.xo)
 	$(XCC) $(LDFLAGS) -o $@ $(sources.xo)
-	$(XSIZE) $@
+	size $@
 
 
 
