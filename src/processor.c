@@ -1,5 +1,13 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdio.h>
+
+/**
+ *
+ * xablau
+ *
+ */
+#include "processor.h"
 
 static const unsigned char SMALL = 9;
 
@@ -36,16 +44,6 @@ struct Packet {
 	unsigned int checksum;
 	char         newline;
 	char         carriage_return;
-};
-
-struct Status {
-	char           state;
-	unsigned short minutes;
-	unsigned short decaseconds;
-	unsigned short seconds;
-	unsigned short deciseconds;
-	unsigned short centiseconds;
-	unsigned short miliseconds;
 };
 
 enum HighValue {
@@ -114,6 +112,18 @@ digit_to_number(char digit) {
 	return (unsigned short)digit - (char)'0';
 }
 
+#ifdef TEST
+static void
+test_digit_to_number(void) {
+	unsigned short expected = 3;
+	assert(digit_to_number('3') == expected);
+	char line[2];
+	sprintf(line, "%hu", digit_to_number('5'));
+	printf(">>>>> %s\n", line);
+}
+#endif
+
+
 static const unsigned int CHECKSUM_INITIAL_VALUE =
 	64;  // speedstacks signal checksum begins at 64
 
@@ -155,12 +165,17 @@ decode_status(byte bytes[sizeof(struct Packet)], struct Status *status) {
 	status->centiseconds = digit_to_number(packet.digits[4]);
 	status->miliseconds  = digit_to_number(packet.digits[5]);  // NOLINT
 
+	if (false) {
+		decode_byte(0, NULL, 0);
+	}
+
 	return 0;
 }
 
 #ifdef TEST
 int
 main(void) {
+	test_digit_to_number();
 	byte bytes[sizeof(struct Packet)] = {
 		'S',
 		'0',
