@@ -131,9 +131,15 @@ WIP
 #### Generation 5
 ![Gen 5](https://www.thecubicle.com/cdn/shop/products/StackMat_20G5_20Timer_1200x1200.jpg?v=1620844103)
 - Packet length: need to check
-- Idle value: need to check
+- Idle value: 1 (double check)
 
 *can we easily support other non-speedstacks timers? testing needed*
+
+### Hardware guide
+
+TODO
+
+on the TRRS jack, we use only the sleeve for GND and the tip connected to any digital pin 
 
 ### Useful sources
 
@@ -141,6 +147,10 @@ WIP
 - JFly's [explanation](https://www.jflei.com/2014/08/21/dialup-stackmat/) on the speedstacks timer signal and reading it in a phone
 - freundTech's [explanation](https://old.reddit.com/r/Cubers/comments/64czya/wip_stackmat_timer_support_for_twistytimer_app/dg19s4y/) on what the speedstacks timer signal bitstream is composed of
 - Dan Smith [testing](https://youtu.be/1QEm99bT8WQ?si=v6V7CJI6A0WZBTTA) what causes reset issues in Gen 5 timers
+- Coding [experiments](https://forum.arduino.cc/t/display-for-stackmat-timer/946502) on forum
+- [Wiring](https://lastminuteengineers.com/max7219-dot-matrix-arduino-tutorial/) a MAX7219 LED Dot Matrix
+- Getting [started](https://www.circuitgeeks.com/arduino-max7219-led-matrix-display/) with MD Parola
+- Old stackmat display [project](https://web.archive.org/web/20100820185842/http://hackvalue.de:80/hv_atmel_stackmat)
 
 #### Migrating an Arduino board to a standalone microcontroller on a breadboard
 
