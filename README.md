@@ -141,6 +141,12 @@ TODO
 
 on the TRRS jack, we use only the sleeve for GND and the tip connected to any digital pin 
 
+### installation, setup
+
+TODO
+
+git ls-files | entr -cs "make -j12 all check"
+
 ### Useful sources
 
 - Odder's Stacktimer Signal Processor [link](https://github.com/Kubiverse/StackmatSignalProcessor): reference on how to process the stackmat signal bitstream (for Gen 4 timers)
